@@ -3,6 +3,8 @@ title: "UN Votes"
 author: "Shawn Santo"
 date: "01-09-20"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 We want to look at the voting history of countries in the United Nations General 
@@ -54,7 +56,7 @@ each year. We'll visualize the results, so let's pick a few countries of
 interest and focus our analysis on them.
 
 ```{r country-list}
-country_list <- c("United States of America", "Ghana", "Mexico", "France")
+country_list <- c("United States of America", "Ghana", "Mexico", "France", "Russian Federation")
 ```
 
 ```{r plot-yearly-yes, fig.width=10, warning=FALSE}
@@ -76,13 +78,13 @@ changed over the years on each of the issues.
 
 ```{r plot-yearly-yes-issue, fig.width=10, warning=FALSE}
 un_votes %>%
-  filter(country %in% c("United States of America", "France")) %>%
+  filter(country %in% c("United States of America", "Russian Federation")) %>%
   inner_join(un_roll_calls, by = "rcid") %>%
   inner_join(un_roll_call_issues, by = "rcid") %>%
   group_by(country, year = year(date), issue) %>%
   summarize(votes = n(),
             percent_yes = mean(vote == "yes")) %>%
-  filter(votes > 5) %>%  # Only use records where there are more than 5 votes
+  filter(votes > 10) %>%  # Only use records where there are more than 5 votes
   ggplot(mapping = aes(x = year, y = percent_yes, color = country)) +
     geom_point() +
     geom_smooth(method = "loess", se = FALSE) + 
